@@ -14,6 +14,7 @@ const extaerInfo = (data, identificador, callback) => {
 
         if (info){
             callback(`ID: ${info.id}, Nombre: ${info.name}, Tipo: ${info.types.join(", ")}`);
+            agregarBusqueda(info);
         } else {
             callback("No se encontró el Pokemon");
         }
@@ -30,5 +31,36 @@ document.getElementById("search").addEventListener("submit", (event) =>{
         document.getElementById("resultado").textContent = resultado ? JSON.stringify(resultado) : "No se encontró el pokemon";
     });
     document.getElementById("search").reset();
+    
 });
 
+//se crea arreglo para añadir las busquedas realizadas
+let busqueda = [];
+
+//para agregar resultados exitosos a la lista de búsquedas
+function agregarBusqueda(info) {
+    //agregar pokemon al arreglo busqueda
+    busqueda.push(info);
+    //ordenar la lista por ID
+    busqueda.sort((a, b) => a.id - b.id);
+    //mostrar la lista actualizada
+    mostrarBusqueda();
+}
+
+//para mostrar la lista de búsquedas en el div #sortPokemon
+function mostrarBusqueda() {
+    const sortPokemonDiv = document.getElementById("sortPokemon");
+    sortPokemonDiv.innerHTML = ""; //limpiar el contenido anterior
+
+    busqueda.forEach(pokemon => {
+        const pokemonInfo = document.createElement("ul");
+        pokemonInfo.classList.add("list-group")
+        pokemonInfo.innerHTML = `
+        <li class="list-group-item">
+        <p class="text-muted">
+        ID: ${pokemon.id}, Nombre: ${pokemon.name}, Tipo: ${pokemon.types.join(", ")}
+        </p>
+        </li>`;
+        sortPokemonDiv.appendChild(pokemonInfo);
+    });
+}
